@@ -9,7 +9,7 @@ export default async function getStringifyYoutubeMusic(title: string): Promise<s
 
 export function checkYoutubeLink(input: string) {
   // 유튜브 URL 찾는 패턴
-  const youtubeUrl = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/g
+  const youtubeUrl = /^((?:https?:)\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))((?!channel)(?!user)\/(?:[\w\-]+\?v=|embed\/|v\/)?)((?!channel)(?!user)[\w\-]+)(((.*(\?|\&)t=(\d+))(\D?|\S+?))|\D?|\S+?)$/
   return youtubeUrl.test(input)
 }
 
