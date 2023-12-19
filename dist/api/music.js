@@ -35,7 +35,6 @@ function playMusicApi(title, guildId, voiceChannelId) {
         let musicYoutubeLink = "";
         console.log(title);
         if ((0, youtube_1.checkYoutubeLink)(title)) {
-            console.log("check link");
             musicYoutubeLink = title;
         }
         else {
@@ -45,6 +44,7 @@ function playMusicApi(title, guildId, voiceChannelId) {
             musicYoutubeLink = (0, youtube_1.parseLinks)(musicYoutube).items[0];
             console.log(musicYoutubeLink);
         }
+        // TODO: check issue
         let song = yield queue.play(title);
         console.log(song.url);
         return song;
