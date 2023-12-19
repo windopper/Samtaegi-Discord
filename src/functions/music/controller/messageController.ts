@@ -39,8 +39,8 @@ function validateChannelInMusicEmbedMemory(message: Message<boolean>, channelId:
 }
 
 async function musicExceptionHandler(message: Message<boolean>, err: Error) {
-    const replyMessage = await message.reply(`<@${message.author.id}>` + " " + err.name + ": " + err.message + err.stack)
-    setTimeout(async () => {
-        await replyMessage.delete();
-    }, 5000)
+    //const replyMessage = await message.reply(`<@${message.author.id}>` + " " + err.name + ": " + err.message + err.stack)
+    // setTimeout(async () => {
+    //     await replyMessage.delete();
+    // }, 5000)
 }
