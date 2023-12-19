@@ -13,7 +13,7 @@ import { initializeTools } from "./agent/tools";
 import chalk from "chalk";
 import { initializeCommands } from "./commands";
 import initializeMusicPlayer from "./api/music";
-import { initializeMusicFunction, initializeSamtaegiChannels } from "./functions/music";
+import { initializeMusicFunction } from "./functions/music";
 import { musicMessageController } from "./functions/music/controller/messageController";
 import { musicButtonController } from "./functions/music/controller/buttonController";
 import { musicCommandController } from "./functions/music/controller/commandController";
@@ -33,8 +33,8 @@ export const client = new Client({
 
 client.once(Events.ClientReady, (c) => {
   initializeMusicPlayer(client);
-  initializeTools();
-  initializeCommands();
+  //initializeTools();
+  //initializeCommands();
   initializeMusicFunction(client);
   console.log(chalk.green(`Ready! Logged in as ${c.user.tag}`));
   client.user?.setActivity("삼태기 메들리", { type: ActivityType.Competing });

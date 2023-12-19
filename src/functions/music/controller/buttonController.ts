@@ -1,6 +1,5 @@
 import { ButtonInteraction } from "discord.js";
 import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
-import { toggleSongLoopApi } from "../../../api/music";
 
 export async function musicButtonController(interaction: ButtonInteraction) {
     try {
