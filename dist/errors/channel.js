@@ -17,6 +17,10 @@ class ChannelError extends samtaegi_1.SamtaegiError {
                 channelError.message = "음성 채널이 없습니다";
                 break;
             }
+            case "INVALID_GUILD_CHANNEL_ERROR": {
+                channelError.message = "";
+                break;
+            }
         }
         return channelError;
     }

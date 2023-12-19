@@ -10,14 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const agent_1 = require("../../agent/agent");
+const music_1 = require("../../api/music");
 exports.default = {
     data: new discord_js_1.SlashCommandBuilder()
-        .setName('message')
+        .setName('test')
         .setDescription('Show Agent Message'),
     execute(interaction) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(agent_1.messages);
+            const queue = (0, music_1.getOrCreateQueue)(interaction.guildId);
+            const userId = (_a = interaction.member) === null || _a === void 0 ? void 0 : _a.user.id;
+            const member = (_b = interaction.guild) === null || _b === void 0 ? void 0 : _b.members.cache.get(userId);
+            const channelId = member === null || member === void 0 ? void 0 : member.voice.channelId;
+            yield (0, music_1.connectVoiceChannelApi)(interaction.guildId, channelId);
+            const song = yield queue.play("https://www.youtube.com/watch?v=-o7X4W-wQbo");
+            console.log(song.url);
         });
     }
 };

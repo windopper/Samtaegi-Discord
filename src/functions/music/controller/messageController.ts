@@ -3,17 +3,21 @@ import { samtaegiEmbedMemory } from "..";
 import { deleteLastMessage, playMusicService } from "../service/messageService";
 import { SamtaegiEmbedAndChannelSchema } from "../../../db";
 import { client } from "../../..";
+import { ChannelError } from "../../../errors/channel";
 
 export async function musicMessageController(message: Message<boolean>) {
+    let isInSamtaegiChannel: boolean = false;
+
     try {
         validateController(message)
+        isInSamtaegiChannel = true;
         await playMusicService(message)    
     }
     catch (err) {
-        if (err instanceof Error) await musicExceptionHandler(message, err);
+        if (err instanceof Error) await musicExceptionHandler(message, err, isInSamtaegiChannel);
     }
     finally {
-        await deleteLastMessage(message);
+        if (isInSamtaegiChannel) await deleteLastMessage(message);
     }
 }
 
@@ -35,12 +39,16 @@ function validateGuildInMusicEmbedMemory(guildId: string) {
 }
 
 function validateChannelInMusicEmbedMemory(message: Message<boolean>, channelId: string) {
-    if (message.channelId !== channelId) throw new Error("")
+    if (message.channelId !== channelId) {
+        throw ChannelError.getDefault("INVALID_GUILD_CHANNEL_ERROR");
+    }
 }
 
-async function musicExceptionHandler(message: Message<boolean>, err: Error) {
-    //const replyMessage = await message.reply(`<@${message.author.id}>` + " " + err.name + ": " + err.message + err.stack)
-    // setTimeout(async () => {
-    //     await replyMessage.delete();
-    // }, 5000)
+async function musicExceptionHandler(message: Message<boolean>, err: Error, isInSamtaegiChannel: boolean) {
+    if (isInSamtaegiChannel) {
+        const replyMessage = await message.reply(`<@${message.author.id}> ` + err.message)
+        setTimeout(async () => {
+            await replyMessage.delete();
+        }, 5000);
+    }
 }

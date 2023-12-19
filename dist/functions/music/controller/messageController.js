@@ -12,18 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.musicMessageController = void 0;
 const __1 = require("..");
 const messageService_1 = require("../service/messageService");
+const channel_1 = require("../../../errors/channel");
 function musicMessageController(message) {
     return __awaiter(this, void 0, void 0, function* () {
+        let isInSamtaegiChannel = false;
         try {
             validateController(message);
+            isInSamtaegiChannel = true;
             yield (0, messageService_1.playMusicService)(message);
         }
         catch (err) {
             if (err instanceof Error)
-                yield musicExceptionHandler(message, err);
+                yield musicExceptionHandler(message, err, isInSamtaegiChannel);
         }
         finally {
-            yield (0, messageService_1.deleteLastMessage)(message);
+            if (isInSamtaegiChannel)
+                yield (0, messageService_1.deleteLastMessage)(message);
         }
     });
 }
@@ -45,14 +49,17 @@ function validateGuildInMusicEmbedMemory(guildId) {
     throw new Error("");
 }
 function validateChannelInMusicEmbedMemory(message, channelId) {
-    if (message.channelId !== channelId)
-        throw new Error("");
+    if (message.channelId !== channelId) {
+        throw channel_1.ChannelError.getDefault("INVALID_GUILD_CHANNEL_ERROR");
+    }
 }
-function musicExceptionHandler(message, err) {
+function musicExceptionHandler(message, err, isInSamtaegiChannel) {
     return __awaiter(this, void 0, void 0, function* () {
-        //const replyMessage = await message.reply(`<@${message.author.id}>` + " " + err.name + ": " + err.message + err.stack)
-        // setTimeout(async () => {
-        //     await replyMessage.delete();
-        // }, 5000)
+        if (isInSamtaegiChannel) {
+            const replyMessage = yield message.reply(`<@${message.author.id}> ` + err.message);
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                yield replyMessage.delete();
+            }), 5000);
+        }
     });
 }

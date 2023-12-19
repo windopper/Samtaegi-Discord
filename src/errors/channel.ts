@@ -3,6 +3,7 @@ import { SamtaegiError } from "./samtaegi";
 type ChannelErrorName = 
     | "NO_GUILD_CHANNEL_ERROR"
     | "NO_VOICE_CHANNEL_ERROR"
+    | "INVALID_GUILD_CHANNEL_ERROR"
 
 export class ChannelError extends SamtaegiError<ChannelErrorName> {
     static getDefault(name: ChannelErrorName): ChannelError {
@@ -17,6 +18,10 @@ export class ChannelError extends SamtaegiError<ChannelErrorName> {
             }
             case "NO_VOICE_CHANNEL_ERROR": {
                 channelError.message = "음성 채널이 없습니다"
+                break;
+            }
+            case "INVALID_GUILD_CHANNEL_ERROR": {
+                channelError.message = ""
                 break;
             }
         }

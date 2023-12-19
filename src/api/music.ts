@@ -25,6 +25,8 @@ export async function playMusicApi(title: string, guildId: string, voiceChannelI
 
     let musicYoutubeLink = "";
 
+    console.log(title)
+
     if (checkYoutubeLink(title)) {
         musicYoutubeLink = title;
     }
@@ -35,7 +37,9 @@ export async function playMusicApi(title: string, guildId: string, voiceChannelI
         console.log(musicYoutubeLink)   
     }
 
-    let song = await queue.play(musicYoutubeLink);
+    // TODO: check issue
+    let song = await queue.play(title);
+    console.log(song.url)
     return song as Song
 }
 
