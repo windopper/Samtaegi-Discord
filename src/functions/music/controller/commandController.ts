@@ -1,6 +1,7 @@
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
 import { commandCollection } from "../../../commands";
 import { propagateEmbed } from "../service/commandService";
+import logger from "../../../config/logger";
 
 export async function musicCommandController(interaction: ChatInputCommandInteraction<CacheType>) {
     const command = commandCollection.get(interaction.commandName);
@@ -14,7 +15,10 @@ export async function musicCommandController(interaction: ChatInputCommandIntera
         await command?.execute(interaction)
         await propagateEmbed(interaction);
     } catch (err) {
-        console.log(err)
+        logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
     }
+}
 
+function getLoggerPrefix(interaction: ChatInputCommandInteraction<CacheType>) {
+    return `command_${interaction.commandName} / ${interaction.user.username}[${interaction.user.id}]`
 }

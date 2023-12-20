@@ -28,16 +28,8 @@ export async function deleteLastMessage(message: Message<boolean>) {
 export async function updateMusicEmbed(messageManager: GuildMessageManager, props: { queue: Queue }) {
     const { queue } = props;
     const guildId = queue.guild.id
-    const { samtaegiChannelId, samtaegiEmbedId } = getSamtaegiEmbedMemory(guildId) as SamtaegiEmbedAndChannelSchema;
-
-    const { nowPlaying, songs } = queue;
+    const { samtaegiEmbedId } = getSamtaegiEmbedMemory(guildId) as SamtaegiEmbedAndChannelSchema;
     const embed = await messageManager.fetch(samtaegiEmbedId)
-
-    const fields: {
-        name: string,
-        value: string
-    }[] = getFields(queue);
-
     const description: string = getDescription(queue);
 
     const newEmbed = {
@@ -57,32 +49,6 @@ export async function updateMusicEmbed(messageManager: GuildMessageManager, prop
     await embed.edit({
         embeds: [newEmbed], components: [buttonActionRow]
     })
-}
-
-function getFields(queue: Queue): {
-    name: string,
-    value: string
-}[] {
-    let fields: {
-        name: string,
-        value: string
-    }[] = []
-    const { songs, destroyed } = queue;
-
-    if (destroyed) return fields;
-
-    if (songs.length > 0) {
-        fields.push({ name: "", value: "" })
-        fields.push({ name: "", value: `현재 큐 **${songs.length - 1} 곡**` })
-        fields = fields.concat(...songs.slice(1).map(v => {
-            return {
-                name: "",
-                value: `${v.name} [${v.duration}]`
-            }
-        }))
-    }
-
-    return fields;
 }
 
 function getDescription(queue: Queue) {

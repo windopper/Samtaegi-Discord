@@ -2,10 +2,12 @@ import { ButtonInteraction } from "discord.js";
 import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
 import { getOrCreateQueue } from "../../../api/music";
 import { ChannelError } from "../../../errors/channel";
+import { SamtaegiError } from "../../../errors/samtaegi";
+import logger from "../../../config/logger";
 
 export async function musicButtonController(interaction: ButtonInteraction) {
     try {
-
+        logger.info(getLoggerPrefix(interaction))
         switch (interaction.customId) {
             case MusicButtonId.PAUSE: {
                 pauseMusicService(interaction);
@@ -55,8 +57,14 @@ async function validateButtonController(interaction: ButtonInteraction) {
 }
 
 async function exceptionHandler(interaction: ButtonInteraction, err: Error) {
+    if (err instanceof SamtaegiError) logger.warn(getLoggerPrefix(interaction) + ` err: ${err}`)
+    else logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
     await interaction.reply({
         content: `:warning: ${err.message}`,
         ephemeral: true
     })
+}
+
+function getLoggerPrefix(interaction: ButtonInteraction) {
+    return `embed_button_${interaction.customId} / ${interaction.user.username}[${interaction.user.id}]`
 }

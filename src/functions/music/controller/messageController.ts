@@ -4,63 +4,62 @@ import { deleteLastMessage, playMusicService } from "../service/messageService";
 import { SamtaegiEmbedAndChannelSchema } from "../../../db";
 import { client } from "../../..";
 import { ChannelError } from "../../../errors/channel";
+import logger from "../../../config/logger";
+import { SamtaegiError } from "../../../errors/samtaegi";
 
 export async function musicMessageController(message: Message<boolean>) {
-    let isInSamtaegiChannel: boolean = false;
-
     try {
-        // check message author and client are different
-        // check message in guild
-        // check guild in samtaegiMemory
-        // check channel in samtaegiMemory
-        validateController(message)
-
-        // if all passed, set true
-        isInSamtaegiChannel = true;
+        if (!validateController(message)) return;
+        logger.info(getLoggerPrefix(message) + ` ${message.content}`)
         await playMusicService(message)    
     }
     catch (err) {
-        if (err instanceof Error) await musicExceptionHandler(message, err, isInSamtaegiChannel);
+        if (err instanceof Error) await musicExceptionHandler(message, err);
     }
-    finally {
-        if (isInSamtaegiChannel) await deleteLastMessage(message);
-    }
+    await deleteLastMessage(message);
 }
 
 function validateController(message: Message<boolean>) {
-    validateDifferentAuthor(message);
-    validateInGuild(message);
-    validateGuildInMusicEmbedMemory(message.guildId as string);
     const { samtaegiChannelId } = samtaegiEmbedMemory.get(message.guildId as string) as SamtaegiEmbedAndChannelSchema;
-    validateChannelInMusicEmbedMemory(message, samtaegiChannelId);
+    return validateDifferentAuthor(message) &&
+        validateInGuild(message) &&
+        validateGuildInMusicEmbedMemory(message.guildId as string) &&
+        validateChannelInMusicEmbedMemory(message, samtaegiChannelId);
 }
 
 function validateDifferentAuthor(message: Message<boolean>) {
-    if (message.author.id === client.user?.id) throw new Error("");
+    if (message.author.id !== client.user?.id) return true;
+    return false;
 }
 
 function validateInGuild(message: Message<boolean>) {
-    if (message.inGuild()) return;
-    throw new Error("");
+    if (message.inGuild()) return true;
+    return false;
 }
 
 function validateGuildInMusicEmbedMemory(guildId: string) {
-    if (samtaegiEmbedMemory.has(guildId)) return;
-    throw new Error("");
+    if (samtaegiEmbedMemory.has(guildId)) return true;
+    return false;
 }
 
 function validateChannelInMusicEmbedMemory(message: Message<boolean>, channelId: string) {
-    if (message.channelId !== channelId) {
-        throw ChannelError.getDefault("INVALID_GUILD_CHANNEL_ERROR");
+    if (message.channelId === channelId) return true;
+    return false;
+}
+
+async function musicExceptionHandler(message: Message<boolean>, err: Error) {
+    const replyMessage = await message.reply(`<@${message.author.id}> ` + err.message)
+    setTimeout(async () => {
+        await replyMessage.delete();
+    }, 5000);
+    if (err instanceof SamtaegiError) {
+        logger.warn(getLoggerPrefix(message) + ` err: ${err}`)
+    }
+    else {
+        logger.error(getLoggerPrefix(message) + ` content: ${message.content} err: ${err}`)
     }
 }
 
-async function musicExceptionHandler(message: Message<boolean>, err: Error, isInSamtaegiChannel: boolean) {
-    if (isInSamtaegiChannel) {
-        console.log(err)
-        const replyMessage = await message.reply(`<@${message.author.id}> ` + err.message)
-        setTimeout(async () => {
-            await replyMessage.delete();
-        }, 5000);
-    }
+function getLoggerPrefix(message: Message<boolean>) {
+    return `message_playmusic / user: ${message.author.username}[${message.author.id}]`
 }

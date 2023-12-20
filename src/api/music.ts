@@ -27,7 +27,6 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
 
     let song: Song | Playlist;
     if (testYoutubePlayListLink(input)) {
-        console.log('playlist')
         song = await queue.playlist(input);
     }
     else if (testYoutubeLink(input)) {
@@ -49,8 +48,6 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
     else {
         song = await queue.play(input);
     }
-
-    console.log(song.url)
     return song
 }
 
