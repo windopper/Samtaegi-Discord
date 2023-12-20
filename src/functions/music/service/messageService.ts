@@ -47,7 +47,6 @@ export async function updateMusicEmbed(messageManager: GuildMessageManager, prop
         thumbnail: {
             url: getThumbnail(queue),
         },
-        fields: fields,
         footer: {
             text: "채팅 입력 란에 유튜브 링크나 제목을 적어서 노래를 틀 수 있다 맨이야"
         }
@@ -88,8 +87,22 @@ function getFields(queue: Queue): {
 
 function getDescription(queue: Queue) {
     const { songs, nowPlaying, destroyed } = queue;
+    let content = `♬ 현재 재생 중인 노래 ${nowPlaying && !destroyed ? `**${nowPlaying.name}** [${songs[0].duration}]` : "없다 맨이야"} \n`
+    if (songs.length > 0) {
+        content += `\n현재 큐 **${songs.length - 1} 곡** \n`
+        for (let i = 0; i<songs.length; i++) {
+            if ((content + getMusicInfo(songs[i]) + '\n').length <= 4000) content += getMusicInfo(songs[i]) + '\n'
+            else {
+                content += `...이하 ${songs.length - i}곡`
+                break;
+            }
+        }
+    }
+    return content;
+}
 
-    return `♬ 현재 재생 중인 노래 ${nowPlaying && !destroyed ? `**${nowPlaying.name}** [${songs[0].duration}]` : "없다 맨이야"} `;
+function getMusicInfo(song: Song) {
+    return `${song.name} [${song.duration}]`
 }
 
 function getThumbnail(queue: Queue) {

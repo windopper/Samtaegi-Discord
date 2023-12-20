@@ -1,8 +1,11 @@
 import { ButtonInteraction } from "discord.js";
 import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
+import { getOrCreateQueue } from "../../../api/music";
+import { ChannelError } from "../../../errors/channel";
 
 export async function musicButtonController(interaction: ButtonInteraction) {
     try {
+
         switch (interaction.customId) {
             case MusicButtonId.PAUSE: {
                 pauseMusicService(interaction);
@@ -37,6 +40,7 @@ export async function musicButtonController(interaction: ButtonInteraction) {
                 break;
             }
         }
+        await propagateEmbed(interaction);
         await interaction.update({
             content: ""
         })
@@ -45,7 +49,9 @@ export async function musicButtonController(interaction: ButtonInteraction) {
         if (err instanceof Error) await exceptionHandler(interaction, err);
     }
 
-    await propagateEmbed(interaction);
+}
+
+async function validateButtonController(interaction: ButtonInteraction) {
 }
 
 async function exceptionHandler(interaction: ButtonInteraction, err: Error) {

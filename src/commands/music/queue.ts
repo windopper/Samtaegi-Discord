@@ -25,7 +25,8 @@ export default {
         })
 
         await interaction.reply({
-            content
+            content: content,
+            ephemeral: true
         })
     }
 }

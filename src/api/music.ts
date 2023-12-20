@@ -1,5 +1,5 @@
-import { Player, Queue, RepeatMode, Song } from "discord-music-player";
-import { checkYoutubeLink, getYoutubeMusic, parseLinks } from "./youtube";
+import { Player, Playlist, Queue, RepeatMode, Song } from "discord-music-player";
+import { testYoutubeLink, testYoutubePlayListLink } from "./youtube";
 import { MusicError } from "../errors/music";
 import { ChannelError } from "../errors/channel";
 import { listenMusicPlayerEvent } from "../functions/music/events/musicPlayerEvents";
@@ -25,8 +25,12 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
     let queue: Queue = getOrCreateQueue(guildId);
     await connectVoiceChannelApi(guildId, voiceChannelId)
 
-    let song: Song;
-    if (checkYoutubeLink(input)) {
+    let song: Song | Playlist;
+    if (testYoutubePlayListLink(input)) {
+        console.log('playlist')
+        song = await queue.playlist(input);
+    }
+    else if (testYoutubeLink(input)) {
         const info = await ytdl.getInfo(input);
         song = new Song(
             {
@@ -47,7 +51,7 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
     }
 
     console.log(song.url)
-    return song as Song
+    return song
 }
 
 export function pauseMusicApi(guildId: string | null) {

@@ -60,6 +60,10 @@ function musicButtonController(interaction) {
     });
 }
 exports.musicButtonController = musicButtonController;
+function validateButtonController(interaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+    });
+}
 function exceptionHandler(interaction, err) {
     return __awaiter(this, void 0, void 0, function* () {
         yield interaction.reply({

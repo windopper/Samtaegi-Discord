@@ -57,6 +57,7 @@ function validateChannelInMusicEmbedMemory(message: Message<boolean>, channelId:
 
 async function musicExceptionHandler(message: Message<boolean>, err: Error, isInSamtaegiChannel: boolean) {
     if (isInSamtaegiChannel) {
+        console.log(err)
         const replyMessage = await message.reply(`<@${message.author.id}> ` + err.message)
         setTimeout(async () => {
             await replyMessage.delete();
