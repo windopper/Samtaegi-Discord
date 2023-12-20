@@ -20,7 +20,9 @@ export default {
         if (!guildId) throw ChannelError.getDefault("NO_GUILD_CHANNEL_ERROR")
         if (!channelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
 
-        await interaction.deferReply()
+        await interaction.deferReply({
+            ephemeral: true
+        })
         const song = await playMusicApi(title, guildId, channelId);
         await interaction.editReply(`${song.name} 노래 큐에 등록 완료!`)
     }

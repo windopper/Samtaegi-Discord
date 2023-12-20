@@ -3,6 +3,8 @@ import { checkYoutubeLink, getYoutubeMusic, parseLinks } from "./youtube";
 import { MusicError } from "../errors/music";
 import { ChannelError } from "../errors/channel";
 import { listenMusicPlayerEvent } from "../functions/music/events/musicPlayerEvents";
+import ytdl from 'ytdl-core'
+import { Time } from "../utils/time";
 
 export let musicPlayer: Player;
 
@@ -14,31 +16,36 @@ export default function initializeMusicPlayer(client: any) {
 /**
  * connect to voice channel and add music to queue
  * 
- * @param title music title or url (only youtube)
+ * @param input music title or url (only youtube)
  * @param guildId 
  * @param voiceChannelId 
  * @returns 
  */
-export async function playMusicApi(title: string, guildId: string, voiceChannelId: string) {
+export async function playMusicApi(input: string, guildId: string, voiceChannelId: string) {
     let queue: Queue = getOrCreateQueue(guildId);
     await connectVoiceChannelApi(guildId, voiceChannelId)
 
-    let musicYoutubeLink = "";
+    let song: Song;
+    if (checkYoutubeLink(input)) {
+        const info = await ytdl.getInfo(input);
+        song = new Song(
+            {
+                name: info.videoDetails.title,
+                url: info.videoDetails.video_url,
+                author: info.videoDetails.author.name,
+                isLive: info.videoDetails.isLiveContent,
+                thumbnail: info.videoDetails.thumbnails[0].url,
+                duration: Time.secondsToTime(Number.parseInt(info.videoDetails.lengthSeconds)),
+            },
+            queue
+        )
 
-    console.log(title)
-
-    if (checkYoutubeLink(title)) {
-        musicYoutubeLink = title;
+        await queue.play(song);
     }
     else {
-        const musicYoutube = await getYoutubeMusic(title);
-        if (musicYoutube.items.length == 0) throw MusicError.getDefault("NO_MUSIC_FOUND_ERROR")
-        musicYoutubeLink = parseLinks(musicYoutube).items[0]
-        console.log(musicYoutubeLink)   
+        song = await queue.play(input);
     }
 
-    // TODO: check issue
-    let song = await queue.play(title);
     console.log(song.url)
     return song as Song
 }

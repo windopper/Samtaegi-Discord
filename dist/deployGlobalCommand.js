@@ -8,20 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = require("discord.js");
-const music_1 = require("../../api/music");
-exports.default = {
-    data: new discord_js_1.SlashCommandBuilder().setName("pause").setNameLocalization("ko", "일시정지")
-        .setDescription("pause music").setDescriptionLocalization("ko", "음악을 일시정지 합니다"),
-    execute(interaction) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const guildId = interaction.guildId;
-            (0, music_1.pauseMusicApi)(guildId);
-            yield interaction.reply({
-                ephemeral: true,
-                content: "음악 일시정지 완료!"
-            });
-        });
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
+const discord_js_1 = require("discord.js");
+const samtaegi_1 = __importDefault(require("./commands/music/samtaegi"));
+const { token, clientId } = process.env;
+const commands = [];
+const rest = new discord_js_1.REST().setToken(token);
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = samtaegi_1.default;
+    commands.push(data);
+    yield rest.put(discord_js_1.Routes.applicationCommands(clientId), {
+        body: commands
+    });
+}))();

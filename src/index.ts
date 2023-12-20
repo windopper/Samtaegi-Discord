@@ -34,36 +34,24 @@ export const client = new Client({
 client.once(Events.ClientReady, (c) => {
   initializeMusicPlayer(client);
   //initializeTools();
-  //initializeCommands();
+  initializeCommands();
   initializeMusicFunction(client);
   console.log(chalk.green(`Ready! Logged in as ${c.user.tag}`));
   client.user?.setActivity("삼태기 메들리", { type: ActivityType.Competing });
 });
 
 client.on("messageCreate", (m) => {
-  if (m.author.id === client.user?.id) return;
-  if (m.inGuild()) {
-    musicMessageController(m);
-    //m.channel.sendTyping();
-
-    return;
-    openAIFunctionCalling(m)
-      .then((r) => {
-        if (r === undefined) return;
-        m.reply(r[0]?.message.content || "");
-      })
-      .catch(console.error);
-  }
+  musicMessageController(m).catch(console.log);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isButton()) {
     const buttonInteraction = interaction as ButtonInteraction;
-    musicButtonController(buttonInteraction);
+    musicButtonController(buttonInteraction).catch(console.log);
   }
   if (interaction.isChatInputCommand()) {
     const chatInteraction = interaction as ChatInputCommandInteraction;
-    musicCommandController(chatInteraction);
+    musicCommandController(chatInteraction).catch(console.log);
   }
 });
 

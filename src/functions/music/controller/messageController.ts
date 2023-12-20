@@ -9,7 +9,13 @@ export async function musicMessageController(message: Message<boolean>) {
     let isInSamtaegiChannel: boolean = false;
 
     try {
+        // check message author and client are different
+        // check message in guild
+        // check guild in samtaegiMemory
+        // check channel in samtaegiMemory
         validateController(message)
+
+        // if all passed, set true
         isInSamtaegiChannel = true;
         await playMusicService(message)    
     }
@@ -22,10 +28,15 @@ export async function musicMessageController(message: Message<boolean>) {
 }
 
 function validateController(message: Message<boolean>) {
+    validateDifferentAuthor(message);
     validateInGuild(message);
     validateGuildInMusicEmbedMemory(message.guildId as string);
-    const { samtaegiChannelId, samtaegiEmbedId } = samtaegiEmbedMemory.get(message.guildId as string) as SamtaegiEmbedAndChannelSchema;
+    const { samtaegiChannelId } = samtaegiEmbedMemory.get(message.guildId as string) as SamtaegiEmbedAndChannelSchema;
     validateChannelInMusicEmbedMemory(message, samtaegiChannelId);
+}
+
+function validateDifferentAuthor(message: Message<boolean>) {
+    if (message.author.id === client.user?.id) throw new Error("");
 }
 
 function validateInGuild(message: Message<boolean>) {

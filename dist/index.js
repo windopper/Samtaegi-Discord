@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.client = void 0;
 const discord_js_1 = require("discord.js");
 require("dotenv/config");
-const agent_1 = require("./agent/agent");
 const chalk_1 = __importDefault(require("chalk"));
+const commands_1 = require("./commands");
 const music_1 = __importDefault(require("./api/music"));
 const music_2 = require("./functions/music");
 const messageController_1 = require("./functions/music/controller/messageController");
@@ -37,37 +37,22 @@ exports.client.once(discord_js_1.Events.ClientReady, (c) => {
     var _a;
     (0, music_1.default)(exports.client);
     //initializeTools();
-    //initializeCommands();
+    (0, commands_1.initializeCommands)();
     (0, music_2.initializeMusicFunction)(exports.client);
     console.log(chalk_1.default.green(`Ready! Logged in as ${c.user.tag}`));
     (_a = exports.client.user) === null || _a === void 0 ? void 0 : _a.setActivity("삼태기 메들리", { type: discord_js_1.ActivityType.Competing });
 });
 exports.client.on("messageCreate", (m) => {
-    var _a;
-    if (m.author.id === ((_a = exports.client.user) === null || _a === void 0 ? void 0 : _a.id))
-        return;
-    if (m.inGuild()) {
-        (0, messageController_1.musicMessageController)(m);
-        //m.channel.sendTyping();
-        return;
-        (0, agent_1.openAIFunctionCalling)(m)
-            .then((r) => {
-            var _a;
-            if (r === undefined)
-                return;
-            m.reply(((_a = r[0]) === null || _a === void 0 ? void 0 : _a.message.content) || "");
-        })
-            .catch(console.error);
-    }
+    (0, messageController_1.musicMessageController)(m).catch(console.log);
 });
 exports.client.on(discord_js_1.Events.InteractionCreate, (interaction) => __awaiter(void 0, void 0, void 0, function* () {
     if (interaction.isButton()) {
         const buttonInteraction = interaction;
-        (0, buttonController_1.musicButtonController)(buttonInteraction);
+        (0, buttonController_1.musicButtonController)(buttonInteraction).catch(console.log);
     }
     if (interaction.isChatInputCommand()) {
         const chatInteraction = interaction;
-        (0, commandController_1.musicCommandController)(chatInteraction);
+        (0, commandController_1.musicCommandController)(chatInteraction).catch(console.log);
     }
 }));
 exports.client.login(token);

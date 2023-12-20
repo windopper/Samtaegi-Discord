@@ -13,17 +13,13 @@ const discord_js_1 = require("discord.js");
 const music_1 = require("../../api/music");
 const channel_1 = require("../../errors/channel");
 exports.default = {
-    data: new discord_js_1.SlashCommandBuilder()
-        .setName("song").setNameLocalization("ko", "노래")
-        .setDescription("play music").setDescriptionLocalization("ko", "음악을 재생 합니다")
-        .addStringOption(e => e.setName("input").setNameLocalization("ko", "입력").setRequired(true)
-        .setDescription("url of title of music").setDescriptionLocalization("ko", "제목 혹은 유튜브 링크")),
+    data: new discord_js_1.SlashCommandBuilder().setName("samtaegi").setNameLocalization("ko", "삼태기")
+        .setDescription("신나는 삼태기 메들리"),
     execute(interaction) {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const title = (_a = interaction.options.get("input")) === null || _a === void 0 ? void 0 : _a.value;
-            const userId = (_b = interaction.member) === null || _b === void 0 ? void 0 : _b.user.id;
-            const member = (_c = interaction.guild) === null || _c === void 0 ? void 0 : _c.members.cache.get(userId);
+            const userId = (_a = interaction.member) === null || _a === void 0 ? void 0 : _a.user.id;
+            const member = (_b = interaction.guild) === null || _b === void 0 ? void 0 : _b.members.cache.get(userId);
             const guildId = interaction.guildId;
             const channelId = member === null || member === void 0 ? void 0 : member.voice.channelId;
             if (!guildId)
@@ -33,8 +29,10 @@ exports.default = {
             yield interaction.deferReply({
                 ephemeral: true
             });
-            const song = yield (0, music_1.playMusicApi)(title, guildId, channelId);
-            yield interaction.editReply(`${song.name} 노래 큐에 등록 완료!`);
+            const song = yield (0, music_1.playMusicApi)("https://www.youtube.com/watch?v=zEYpydNwgDc&t=1s", guildId, channelId);
+            yield interaction.editReply({
+                content: `${song.name} 노래 큐에 등록 완료!`
+            });
         });
     }
 };

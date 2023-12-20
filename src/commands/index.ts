@@ -12,13 +12,13 @@ export async function initializeCommands() {
   const foldersPath = path.join(__dirname);
   const commandFolders = fs
     .readdirSync(foldersPath)
-    .filter((file) => !file.toString().endsWith(".ts"));
+    .filter((file) => !file.match(/\.ts$|\.js$/));
 
   for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder.toString());
     const commandFiles = fs
       .readdirSync(commandsPath)
-      .filter((file) => file.toString().endsWith(".ts"));
+      .filter((file) => file.match(/\.ts$|\.js$/));
 
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file.toString());

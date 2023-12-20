@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrCreateQueue = exports.disconnectVoiceChannelApi = exports.connectVoiceChannelApi = exports.shuffleApi = exports.clearQueueApi = exports.toggleQueueLoopApi = exports.toggleSongLoopApi = exports.toggleDisableLoopApi = exports.stopMusicApi = exports.skipMusicApi = exports.showMusicListApi = exports.resumeMusicApi = exports.pauseMusicApi = exports.playMusicApi = exports.musicPlayer = void 0;
 const discord_music_player_1 = require("discord-music-player");
@@ -15,6 +18,8 @@ const youtube_1 = require("./youtube");
 const music_1 = require("../errors/music");
 const channel_1 = require("../errors/channel");
 const musicPlayerEvents_1 = require("../functions/music/events/musicPlayerEvents");
+const ytdl_core_1 = __importDefault(require("ytdl-core"));
+const time_1 = require("../utils/time");
 function initializeMusicPlayer(client) {
     exports.musicPlayer = new discord_music_player_1.Player(client);
     (0, musicPlayerEvents_1.listenMusicPlayerEvent)(client, exports.musicPlayer);
@@ -23,29 +28,31 @@ exports.default = initializeMusicPlayer;
 /**
  * connect to voice channel and add music to queue
  *
- * @param title music title or url (only youtube)
+ * @param input music title or url (only youtube)
  * @param guildId
  * @param voiceChannelId
  * @returns
  */
-function playMusicApi(title, guildId, voiceChannelId) {
+function playMusicApi(input, guildId, voiceChannelId) {
     return __awaiter(this, void 0, void 0, function* () {
         let queue = getOrCreateQueue(guildId);
         yield connectVoiceChannelApi(guildId, voiceChannelId);
-        let musicYoutubeLink = "";
-        console.log(title);
-        if ((0, youtube_1.checkYoutubeLink)(title)) {
-            musicYoutubeLink = title;
+        let song;
+        if ((0, youtube_1.checkYoutubeLink)(input)) {
+            const info = yield ytdl_core_1.default.getInfo(input);
+            song = new discord_music_player_1.Song({
+                name: info.videoDetails.title,
+                url: info.videoDetails.video_url,
+                author: info.videoDetails.author.name,
+                isLive: info.videoDetails.isLiveContent,
+                thumbnail: info.videoDetails.thumbnails[0].url,
+                duration: time_1.Time.secondsToTime(Number.parseInt(info.videoDetails.lengthSeconds)),
+            }, queue);
+            yield queue.play(song);
         }
         else {
-            const musicYoutube = yield (0, youtube_1.getYoutubeMusic)(title);
-            if (musicYoutube.items.length == 0)
-                throw music_1.MusicError.getDefault("NO_MUSIC_FOUND_ERROR");
-            musicYoutubeLink = (0, youtube_1.parseLinks)(musicYoutube).items[0];
-            console.log(musicYoutubeLink);
+            song = yield queue.play(input);
         }
-        // TODO: check issue
-        let song = yield queue.play(title);
         console.log(song.url);
         return song;
     });

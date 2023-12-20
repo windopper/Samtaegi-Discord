@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const youtube_1 = require("../youtube");
-console.log((0, youtube_1.checkYoutubeLink)("https://www.youtube.com/watch?v=-o7X4W-wQbo"));
+const ytdl_core_1 = __importDefault(require("ytdl-core"));
+ytdl_core_1.default.getInfo("https://www.youtube.com/watch?v=-o7X4W-wQbo").then(console.log);

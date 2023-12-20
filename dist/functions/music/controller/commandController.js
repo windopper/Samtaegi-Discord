@@ -21,17 +21,11 @@ function musicCommandController(interaction) {
         }
         try {
             yield (command === null || command === void 0 ? void 0 : command.execute(interaction));
+            yield (0, commandService_1.propagateEmbed)(interaction);
         }
         catch (err) {
             console.log(err);
-            if (err instanceof Error) {
-                interaction.reply({
-                    ephemeral: true,
-                    content: err.message
-                });
-            }
         }
-        yield (0, commandService_1.propagateEmbed)(interaction);
     });
 }
 exports.musicCommandController = musicCommandController;

@@ -12,15 +12,9 @@ export async function musicCommandController(interaction: ChatInputCommandIntera
 
     try {
         await command?.execute(interaction)
+        await propagateEmbed(interaction);
     } catch (err) {
         console.log(err)
-        if (err instanceof Error) { 
-            interaction.reply({
-                ephemeral: true,
-                content: err.message
-            })
-        }
     }
 
-    await propagateEmbed(interaction);
 }

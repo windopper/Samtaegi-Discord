@@ -12,12 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.musicMessageController = void 0;
 const __1 = require("..");
 const messageService_1 = require("../service/messageService");
+const __2 = require("../../..");
 const channel_1 = require("../../../errors/channel");
 function musicMessageController(message) {
     return __awaiter(this, void 0, void 0, function* () {
         let isInSamtaegiChannel = false;
         try {
+            // check message author and client are different
+            // check message in guild
+            // check guild in samtaegiMemory
+            // check channel in samtaegiMemory
             validateController(message);
+            // if all passed, set true
             isInSamtaegiChannel = true;
             yield (0, messageService_1.playMusicService)(message);
         }
@@ -33,10 +39,16 @@ function musicMessageController(message) {
 }
 exports.musicMessageController = musicMessageController;
 function validateController(message) {
+    validateDifferentAuthor(message);
     validateInGuild(message);
     validateGuildInMusicEmbedMemory(message.guildId);
-    const { samtaegiChannelId, samtaegiEmbedId } = __1.samtaegiEmbedMemory.get(message.guildId);
+    const { samtaegiChannelId } = __1.samtaegiEmbedMemory.get(message.guildId);
     validateChannelInMusicEmbedMemory(message, samtaegiChannelId);
+}
+function validateDifferentAuthor(message) {
+    var _a;
+    if (message.author.id === ((_a = __2.client.user) === null || _a === void 0 ? void 0 : _a.id))
+        throw new Error("");
 }
 function validateInGuild(message) {
     if (message.inGuild())

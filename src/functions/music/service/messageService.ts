@@ -22,10 +22,6 @@ export async function playMusicService(message: Message<boolean>) {
 }
 
 export async function deleteLastMessage(message: Message<boolean>) {
-    await deleteInput(message);
-}
-
-async function deleteInput(message: Message<boolean>) {
     await message.delete();
 }
 

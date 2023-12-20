@@ -12,9 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.propagateEmbed = void 0;
 const messageService_1 = require("./messageService");
 const music_1 = require("../../../api/music");
+const __1 = require("..");
 function propagateEmbed(interaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        const textChannel = interaction.channel;
+        if (!interaction.guildId || !interaction.guild)
+            return;
+        const { samtaegiChannelId } = (0, __1.getSamtaegiEmbedMemory)(interaction.guildId);
+        const textChannel = yield interaction.guild.channels.fetch(samtaegiChannelId);
         yield (0, messageService_1.updateMusicEmbed)(textChannel.messages, {
             queue: (0, music_1.getOrCreateQueue)(interaction.guildId)
         });

@@ -34,15 +34,10 @@ function playMusicService(message) {
 exports.playMusicService = playMusicService;
 function deleteLastMessage(message) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield deleteInput(message);
-    });
-}
-exports.deleteLastMessage = deleteLastMessage;
-function deleteInput(message) {
-    return __awaiter(this, void 0, void 0, function* () {
         yield message.delete();
     });
 }
+exports.deleteLastMessage = deleteLastMessage;
 function updateMusicEmbed(messageManager, props) {
     return __awaiter(this, void 0, void 0, function* () {
         const { queue } = props;
