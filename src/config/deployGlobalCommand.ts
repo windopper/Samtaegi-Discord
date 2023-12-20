@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { REST, Routes } from "discord.js";
-import samtaegi from "./commands/music/samtaegi";
+import samtaegi from "../commands/music/samtaegi";
 
 const { token, clientId } = process.env
 

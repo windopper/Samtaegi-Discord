@@ -56,7 +56,7 @@ function getDescription(queue: Queue) {
     let content = `♬ 현재 재생 중인 노래 ${nowPlaying && !destroyed ? `**${nowPlaying.name}** [${songs[0].duration}]` : "없다 맨이야"} \n`
     if (songs.length > 0) {
         content += `\n현재 큐 **${songs.length - 1} 곡** \n`
-        for (let i = 0; i<songs.length; i++) {
+        for (let i = 1; i<songs.length; i++) {
             if ((content + getMusicInfo(songs[i]) + '\n').length <= 4000) content += getMusicInfo(songs[i]) + '\n'
             else {
                 content += `...이하 ${songs.length - i}곡`
