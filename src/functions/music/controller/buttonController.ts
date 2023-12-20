@@ -3,7 +3,7 @@ import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, s
 import { getOrCreateQueue } from "../../../api/music";
 import { ChannelError } from "../../../errors/channel";
 import { SamtaegiError } from "../../../errors/samtaegi";
-import logger from "../../../config/logger";
+import logger from "../../../logger";
 
 export async function musicButtonController(interaction: ButtonInteraction) {
     try {

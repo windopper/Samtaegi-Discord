@@ -4,7 +4,7 @@ import { deleteLastMessage, playMusicService } from "../service/messageService";
 import { SamtaegiEmbedAndChannelSchema } from "../../../db";
 import { client } from "../../..";
 import { ChannelError } from "../../../errors/channel";
-import logger from "../../../config/logger";
+import logger from "../../../logger";
 import { SamtaegiError } from "../../../errors/samtaegi";
 
 export async function musicMessageController(message: Message<boolean>) {

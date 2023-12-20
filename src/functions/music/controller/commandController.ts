@@ -1,7 +1,7 @@
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
 import { commandCollection } from "../../../commands";
 import { propagateEmbed } from "../service/commandService";
-import logger from "../../../config/logger";
+import logger from "../../../logger";
 
 export async function musicCommandController(interaction: ChatInputCommandInteraction<CacheType>) {
     const command = commandCollection.get(interaction.commandName);
