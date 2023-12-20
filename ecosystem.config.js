@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
     name   : "samtaegi",
-    script : "dist"
+    script : "dist/src/index.js"
   }]
 }
