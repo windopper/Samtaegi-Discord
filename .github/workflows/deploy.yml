@@ -24,11 +24,11 @@
 #    See the documentation for each action used below for the recommended IAM policies for this IAM user,
 #    and best practices on handling the access key credentials.
 
-name: Deploy to Amazon ECS
+name: deploy to samtaegi server
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "master" ]
 
 jobs:
   deploy:
@@ -60,7 +60,7 @@ jobs:
     - name: zip file
       run: zip -r samtaegi.zip ./dist ./scripts ./appspec.yml ./.env ./package.json ./ecosystem.config.js
 
-    - name: Configure AWS credentials
+    - name: configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
