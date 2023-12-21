@@ -53,4 +53,6 @@ jobs:
 
     - name: build server
       working-directory: ./
-      run: npm run build
+      run: |
+        npm i
+        npm run build
