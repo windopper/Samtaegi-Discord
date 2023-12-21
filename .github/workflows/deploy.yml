@@ -74,5 +74,5 @@ jobs:
       run: aws deploy create-deployment
         --application-name samtaegi-code-deploy
         --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name GROUP
+        --deployment-group-name samtaegi-code-deploy
         --s3-location bucket=samtaegi-bucket,bundleType=zip,key=deploy/samtaegi.zip
