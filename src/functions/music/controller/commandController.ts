@@ -2,6 +2,7 @@ import { CacheType, ChatInputCommandInteraction } from "discord.js";
 import { commandCollection } from "../../../commands";
 import { propagateEmbed } from "../service/commandService";
 import logger from "../../../logger";
+import { SamtaegiError } from "../../../errors/samtaegi";
 
 export async function musicCommandController(interaction: ChatInputCommandInteraction<CacheType>) {
     const command = commandCollection.get(interaction.commandName);
@@ -12,10 +13,19 @@ export async function musicCommandController(interaction: ChatInputCommandIntera
     }
 
     try {
+        await interaction.deferReply({
+            ephemeral: true
+        })
         await command?.execute(interaction)
         await propagateEmbed(interaction);
     } catch (err) {
-        logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
+        if (err instanceof SamtaegiError) {
+            logger.warn(getLoggerPrefix(interaction) + ` err: ${err}`)
+            await interaction.editReply({
+                content: err.message
+            })
+        }
+        else logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
     }
 }
 

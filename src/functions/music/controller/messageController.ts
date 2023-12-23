@@ -1,11 +1,11 @@
 import { Message } from "discord.js";
-import { samtaegiEmbedMemory } from "..";
 import { deleteLastMessage, playMusicService } from "../service/messageService";
 import { SamtaegiEmbedAndChannelSchema } from "../../../db";
 import { client } from "../../..";
 import { ChannelError } from "../../../errors/channel";
 import logger from "../../../logger";
 import { SamtaegiError } from "../../../errors/samtaegi";
+import { samtaegiEmbedMemory } from "../service/channelService";
 
 export async function musicMessageController(message: Message<boolean>) {
     try {

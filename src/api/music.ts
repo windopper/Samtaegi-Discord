@@ -5,11 +5,14 @@ import { ChannelError } from "../errors/channel";
 import { listenMusicPlayerEvent } from "../functions/music/events/musicPlayerEvents";
 import ytdl from 'ytdl-core'
 import { Time } from "../utils/time";
+import { Utils } from "discord.js";
 
 export let musicPlayer: Player;
 
 export default function initializeMusicPlayer(client: any) {
-    musicPlayer = new Player(client);
+    musicPlayer = new Player(client, {
+
+    });
     listenMusicPlayerEvent(client, musicPlayer);
 }
 
@@ -38,7 +41,7 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
                 author: info.videoDetails.author.name,
                 isLive: info.videoDetails.isLiveContent,
                 thumbnail: info.videoDetails.thumbnails[0].url,
-                duration: Time.secondsToTime(Number.parseInt(info.videoDetails.lengthSeconds)),
+                duration: Time.msToTime((Number.parseInt(info.videoDetails.lengthSeconds) ?? 0) * 1000)
             },
             queue
         )
@@ -129,7 +132,7 @@ export function disconnectVoiceChannelApi(guildId?: string | null) {
 }
 
 export function getOrCreateQueue(guildId?: string | null): Queue {
-    if (!guildId) throw ChannelError.getDefault("NO_GUILD_CHANNEL_ERROR")
+    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
     if (musicPlayer.hasQueue(guildId)) return musicPlayer.getQueue(guildId) as Queue
     else return musicPlayer.createQueue(guildId)
 }

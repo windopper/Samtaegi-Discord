@@ -8,60 +8,55 @@ import logger from "../../../logger";
 export async function musicButtonController(interaction: ButtonInteraction) {
     try {
         logger.info(getLoggerPrefix(interaction))
+        await interaction.deferReply({
+            ephemeral: true
+        })
         switch (interaction.customId) {
             case MusicButtonId.PAUSE: {
-                pauseMusicService(interaction);
+                await pauseMusicService(interaction);
                 break;
             }
             case MusicButtonId.SHUFFLE: {
-                shuffleMusicService(interaction);
+                await shuffleMusicService(interaction);
                 break;
             }
             case MusicButtonId.SKIP: {
-                skipMusicService(interaction);
+                await skipMusicService(interaction);
                 break;
             }
             case MusicButtonId.STOP: {
-                stopMusicService(interaction);
+                await stopMusicService(interaction);
                 break;
             }
             case MusicButtonId.RESUME: {
-                resumeMusicService(interaction);
+                await resumeMusicService(interaction);
                 break;
             }
             case MusicButtonId.NO_LOOP: {
-                toggleSongLoopService(interaction);
+                await toggleSongLoopService(interaction);
                 break;
             }
             case MusicButtonId.SONG_LOOP: {
-                toggleQueueLoopService(interaction);
+                await toggleQueueLoopService(interaction);
                 break;
             }
             case MusicButtonId.QUEUE_LOOP: {
-                toggleDisableLoopService(interaction);
+                await toggleDisableLoopService(interaction);
                 break;
             }
         }
         await propagateEmbed(interaction);
-        await interaction.update({
-            content: ""
-        })
     }
     catch(err) {
         if (err instanceof Error) await exceptionHandler(interaction, err);
     }
-
-}
-
-async function validateButtonController(interaction: ButtonInteraction) {
 }
 
 async function exceptionHandler(interaction: ButtonInteraction, err: Error) {
     if (err instanceof SamtaegiError) logger.warn(getLoggerPrefix(interaction) + ` err: ${err}`)
     else logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
-    await interaction.reply({
+    await interaction.editReply({
         content: `:warning: ${err.message}`,
-        ephemeral: true
     })
 }
 

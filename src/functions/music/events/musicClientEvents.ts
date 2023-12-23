@@ -1,33 +1,33 @@
 import { Client, DMChannel, Message, NonThreadGuildBasedChannel, PartialMessage, TextChannel } from "discord.js";
-import { getSamtaegiEmbedMemory, initializeSamtaegiChannel, saveSamtaegiEmbedMemory } from "..";
+import { getSamtaegiEmbedMemory, initializeSamtaegiChannel, saveSamtaegiEmbedMemory } from "../service/channelService";
 
 export async function listenClientEvent(client: Client) {
     client
     // 뮤직 임베드 메시지가 없어지면 다시 복구 하기 위해
     .on("messageDelete", async (message) => {
-        restoreSamtaegiMessage(client, message);
+        restoreSamtaegiMessage(message);
     })
     // 삼태기 채널이 없어지면 다시 복구 하기 위해
     .on("channelDelete", (channel) => {
-        restoreSamtaegiChannel(client, channel);
+        restoreSamtaegiChannel(channel);
     })
 }   
 
-async function restoreSamtaegiMessage(client: Client, message: Message<boolean> | PartialMessage) {
+async function restoreSamtaegiMessage(message: Message<boolean> | PartialMessage) {
     if (message.partial) message = await message.fetch();
     if (!message.guild) return;
     if (checkSamtaegiEmbedMessage(message)) {
-        await initializeSamtaegiChannel(client, message.guild)
-        await saveSamtaegiEmbedMemory();
+        await initializeSamtaegiChannel(message.guild)
+        saveSamtaegiEmbedMemory();
     }
 }
 
-async function restoreSamtaegiChannel(client: Client, channel: DMChannel | NonThreadGuildBasedChannel) {
+async function restoreSamtaegiChannel(channel: DMChannel | NonThreadGuildBasedChannel) {
     if (!channel.isTextBased()) return;
     channel = channel as TextChannel
     if (checkSamtaegiChannel(channel)) {
-        await initializeSamtaegiChannel(client, channel.guild)
-        await saveSamtaegiEmbedMemory();
+        await initializeSamtaegiChannel(channel.guild)
+        saveSamtaegiEmbedMemory();
     }
 }
 

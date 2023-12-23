@@ -8,8 +8,7 @@ export default {
     async execute(interaction: ChatInputCommandInteraction<CacheType>) {
         const guildId = interaction.guildId;
         pauseMusicApi(guildId);
-        await interaction.reply({
-            ephemeral: true,
+        await interaction.editReply({
             content: "음악 일시정지 완료!"
         })
     }

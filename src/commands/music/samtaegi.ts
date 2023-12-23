@@ -10,12 +10,9 @@ export default {
         const member = interaction.guild?.members.cache.get(userId);
         const guildId = interaction.guildId;
         const channelId = member?.voice.channelId;
-        if (!guildId) throw ChannelError.getDefault("NO_GUILD_CHANNEL_ERROR")
+        if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
         if (!channelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
-
-        await interaction.deferReply({
-            ephemeral: true
-        })
+        
         const song = await playMusicApi("https://www.youtube.com/watch?v=zEYpydNwgDc&t=1s", guildId, channelId);
         await interaction.editReply({
             content: `${song.name} 노래 큐에 등록 완료!`

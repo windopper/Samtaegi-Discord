@@ -2,15 +2,15 @@ import { Queue, Song } from "discord-music-player";
 import { getOrCreateQueue, playMusicApi } from "../../../api/music";
 import { ChannelError } from "../../../errors/channel";
 import { ButtonBuilder, EmbedBuilder, GuildMessageManager, Message } from "discord.js";
-import { getSamtaegiEmbedMemory } from "../index";
 import { SamtaegiEmbedAndChannelSchema } from "../../../db";
 import { createButtonAction } from "./buttonService";
+import { getSamtaegiEmbedMemory } from "./channelService";
 
 export async function playMusicService(message: Message<boolean>) {
     const input = message.content;
     const guildId = message.guildId;
     const voiceChannelId = message.member?.voice.channelId;
-    if (!guildId) throw ChannelError.getDefault("NO_GUILD_CHANNEL_ERROR");
+    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR");
     if (!voiceChannelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
 
     const youtubeMusic = await playMusicApi(input, guildId, voiceChannelId);

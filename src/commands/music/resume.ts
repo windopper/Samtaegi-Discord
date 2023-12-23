@@ -8,8 +8,7 @@ export default {
     async execute(interaction: ChatInputCommandInteraction<CacheType>) {
         const guildId = interaction.guildId;
         resumeMusicApi(guildId);
-        await interaction.reply({
-            ephemeral: true,
+        await interaction.editReply({
             content: "일시 정지를 해제했어요"
         })
     }

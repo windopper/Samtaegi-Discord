@@ -1,7 +1,7 @@
 import { CacheType, ChatInputCommandInteraction, TextChannel } from "discord.js";
 import { updateMusicEmbed } from "./messageService";
 import { getOrCreateQueue } from "../../../api/music";
-import { getSamtaegiEmbedMemory } from "..";
+import { getSamtaegiEmbedMemory } from "./channelService";
 
 export async function propagateEmbed(interaction: ChatInputCommandInteraction<CacheType>) {
     if (!interaction.guildId || !interaction.guild) return;

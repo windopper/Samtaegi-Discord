@@ -24,9 +24,8 @@ export default {
             content += `- ${v.name}\n`
         })
 
-        await interaction.reply({
+        await interaction.editReply({
             content: content,
-            ephemeral: true
         })
     }
 }

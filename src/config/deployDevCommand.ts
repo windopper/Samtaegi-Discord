@@ -11,7 +11,8 @@ const { token, clientId, devGuildId } = process.env
 const rest = new REST().setToken(token as string);
 
 (async () => {
-  const foldersPath = path.join(__dirname, "commands");
+
+  const foldersPath = path.join(__dirname, "..", "commands");
   const commandFolders = fs.readdirSync(foldersPath);
 
   for (const folder of commandFolders) {
