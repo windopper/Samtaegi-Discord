@@ -14,7 +14,7 @@ import {
   saveGuildsData,
 } from "../../../db";
 import { updateMusicEmbed } from "./updateMusicEmbed";
-import { getOrCreateQueue } from "../../../api/music";
+import { getOrCreateQueue } from "../../../api/music/music";
 
 type GuildId = string;
 

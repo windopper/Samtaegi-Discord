@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, Interaction, CacheType, ChatInputCommandInteraction, User } from "discord.js";
-import { playMusicApi } from "../../api/music";
+import { playMusicApi } from "../../api/music/music";
 import { ChannelError } from "../../errors/channel";
 
 export default {

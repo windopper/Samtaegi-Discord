@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from "discord.js";
-import { pauseMusicApi } from "../../api/music";
+import { pauseMusicApi } from "../../api/music/music";
 
 export default {
     data: new SlashCommandBuilder().setName("pause").setNameLocalization("ko", "일시정지")

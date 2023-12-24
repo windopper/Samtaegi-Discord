@@ -1,17 +1,19 @@
-import { Player, Playlist, Queue, RepeatMode, Song } from "discord-music-player";
-import { testYoutubeLink, testYoutubePlayListLink } from "./youtube";
-import { MusicError } from "../errors/music";
-import { ChannelError } from "../errors/channel";
-import { listenMusicPlayerEvent } from "../functions/music/events/musicPlayerEvents";
+import { testYoutubeLink, testYoutubePlayListLink } from "./youtube"
+import { MusicError } from "../../errors/music";
+import { ChannelError } from "../../errors/channel";
+import { listenMusicPlayerEvent } from "../../functions/music/events/musicPlayerEvents";
 import ytdl from 'ytdl-core'
-import { Time } from "../utils/time";
+import { Time } from "../../utils/time";
 import { User, Utils } from "discord.js";
+import logger from "../../logger";
+import { Player, Playlist, Queue, RepeatMode, Song } from "discord-music-player";
 
 export let musicPlayer: Player;
 
 export default function initializeMusicPlayer(client: any) {
     musicPlayer = new Player(client, {
-        quality: 'low'
+        quality: 'low',
+        
     });
     listenMusicPlayerEvent(client, musicPlayer);
 }
@@ -137,12 +139,14 @@ export function disconnectVoiceChannelApi(guildId?: string | null) {
     return "음성 채널에서 나갔어요"
 }
 
-export function getOrCreateQueue(guildId?: string | null): Queue {
-    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
-    if (musicPlayer.hasQueue(guildId)) return musicPlayer.getQueue(guildId) as Queue
-    else return musicPlayer.createQueue(guildId)
-}
-
 function validateConnection(guildQueue: Queue) {
     if (!guildQueue.connection) throw MusicError.getDefault("NO_QUEUE_CONNECTION")
+}
+
+export function getOrCreateQueue(guildId?: string | null) {
+    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
+    let queue = musicPlayer.getQueue(guildId);
+    if (queue) return queue;
+    queue = musicPlayer.createQueue(guildId);
+    return queue;
 }

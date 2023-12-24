@@ -2,7 +2,7 @@ import { Player, Queue } from 'discord-music-player'
 import { Message } from 'discord.js'
 import { Tools, registerTools } from './';
 import { generateToolSchema } from './util';
-import { clearQueueApi, connectVoiceChannelApi, pauseMusicApi, playMusicApi, toggleDisableLoopApi, resumeMusicApi, showMusicListApi, shuffleApi, skipMusicApi, stopMusicApi, toggleQueueLoopApi, toggleSongLoopApi } from '../../api/music';
+import { clearQueueApi, connectVoiceChannelApi, pauseMusicApi, playMusicApi, toggleDisableLoopApi, resumeMusicApi, showMusicListApi, shuffleApi, skipMusicApi, stopMusicApi, toggleQueueLoopApi, toggleSongLoopApi } from '../../api/music/music';
 import { MusicError } from '../../errors/music';
 
 export let musicPlayer: Player;

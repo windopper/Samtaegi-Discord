@@ -17,7 +17,7 @@ import {
   toggleDisableLoopApi,
   toggleQueueLoopApi,
   toggleSongLoopApi,
-} from "../../../api/music";
+} from "../../../api/music/music";
 import { updateMusicEmbed } from "./updateMusicEmbed";
 import { Queue, RepeatMode, Song } from "discord-music-player";
 import { connect } from "pm2";

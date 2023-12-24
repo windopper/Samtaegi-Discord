@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from "discord.js";
-import { resumeMusicApi } from "../../api/music";
+import { resumeMusicApi } from "../../api/music/music";
 
 export default {
     data: new SlashCommandBuilder().setName("resume").setNameLocalization("ko", "재생")

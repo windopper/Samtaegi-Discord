@@ -1,8 +1,8 @@
-import { Player, Queue } from "discord-music-player";
 import { Client, TextChannel } from "discord.js";
 import { updateMusicEmbed } from "../service/updateMusicEmbed";
 import { getSamtaegiEmbedMemory } from "../service/channelService";
 import logger from "../../../logger";
+import { Player, Queue } from "discord-music-player";
 
 export function listenMusicPlayerEvent(client: Client, player: Player) {
   player

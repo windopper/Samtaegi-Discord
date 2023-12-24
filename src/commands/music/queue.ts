@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from "discord.js";
-import { getOrCreateQueue, showMusicListApi } from "../../api/music";
+import { getOrCreateQueue, showMusicListApi } from "../../api/music/music";
 
 export default {
     data: new SlashCommandBuilder().setName("queue").setNameLocalization("ko", "큐")

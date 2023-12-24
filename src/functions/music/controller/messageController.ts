@@ -53,6 +53,7 @@ async function musicExceptionHandler(message: Message<boolean>, err: Error) {
         await replyMessage.delete();
     }, 5000);
     if (err instanceof SamtaegiError) {
+        console.log(err)
         logger.warn(getLoggerPrefix(message) + ` err: ${err}`)
     }
     else {

@@ -1,4 +1,4 @@
-import { testYoutubeLink } from "../youtube";
+import { testYoutubeLink } from "../music/Utils";
 
 import ytdl from 'ytdl-core';
 

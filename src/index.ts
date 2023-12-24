@@ -12,7 +12,7 @@ import { openAIFunctionCalling } from "./agent/agent";
 import { initializeTools } from "./agent/tools";
 import chalk from "chalk";
 import { initializeCommands } from "./commands";
-import initializeMusicPlayer from "./api/music";
+import initializeMusicPlayer from "./api/music/music";
 import { initializeMusicFunction } from "./functions/music";
 import { musicMessageController } from "./functions/music/controller/messageController";
 import { musicButtonController } from "./functions/music/controller/buttonController";

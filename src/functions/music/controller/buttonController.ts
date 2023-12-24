@@ -1,6 +1,6 @@
 import { ButtonInteraction } from "discord.js";
 import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, showQueueList, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
-import { getOrCreateQueue } from "../../../api/music";
+import { getOrCreateQueue } from "../../../api/music/music";
 import { ChannelError } from "../../../errors/channel";
 import { SamtaegiError } from "../../../errors/samtaegi";
 import logger from "../../../logger";

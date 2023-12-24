@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from "discord.js";
 import { messages } from "../../agent/agent";
-import { connectVoiceChannelApi, getOrCreateQueue } from "../../api/music";
+import { connectVoiceChannelApi, getOrCreateQueue } from "../../api/music/music";
 
 export default {
     data: new SlashCommandBuilder()

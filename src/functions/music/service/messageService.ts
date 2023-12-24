@@ -1,5 +1,5 @@
 import { Song } from "discord-music-player";
-import { getOrCreateQueue, playMusicApi } from "../../../api/music";
+import { getOrCreateQueue, playMusicApi } from "../../../api/music/music";
 import { ChannelError } from "../../../errors/channel";
 import { ButtonBuilder, EmbedBuilder, GuildMessageManager, Message } from "discord.js";
 import { updateMusicEmbed } from "./updateMusicEmbed";

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from "discord.js";
-import { skipMusicApi } from "../../api/music";
+import { skipMusicApi } from "../../api/music/music";
 
 export default {
     data: new SlashCommandBuilder().setName("skip").setNameLocalization("ko", "스킵")
