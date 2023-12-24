@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Interaction, CacheType, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, Interaction, CacheType, ChatInputCommandInteraction, User } from "discord.js";
 import { playMusicApi } from "../../api/music";
 import { ChannelError } from "../../errors/channel";
 
@@ -19,7 +19,6 @@ export default {
         const channelId = member?.voice.channelId;
         if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
         if (!channelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
-        const song = await playMusicApi(title, guildId, channelId);
-        await interaction.editReply(`${song.name} 노래 큐에 등록 완료!`)
+        const song = await playMusicApi(title, guildId, channelId, interaction.user)
     }
 }

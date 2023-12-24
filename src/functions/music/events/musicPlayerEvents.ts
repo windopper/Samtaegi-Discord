@@ -1,7 +1,8 @@
 import { Player, Queue } from "discord-music-player";
 import { Client, TextChannel } from "discord.js";
-import { updateMusicEmbed } from "../service/messageService";
+import { updateMusicEmbed } from "../service/updateMusicEmbed";
 import { getSamtaegiEmbedMemory } from "../service/channelService";
+import logger from "../../../logger";
 
 export function listenMusicPlayerEvent(client: Client, player: Player) {
   player
@@ -24,6 +25,7 @@ export function listenMusicPlayerEvent(client: Client, player: Player) {
       await propagateMusicEmbed(q);
     })
     .on("error", (err, q) => {
+      logger.error("music_player / " + err)
     });
 }
 

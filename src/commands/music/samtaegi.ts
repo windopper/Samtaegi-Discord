@@ -13,7 +13,7 @@ export default {
         if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
         if (!channelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
         
-        const song = await playMusicApi("https://www.youtube.com/watch?v=zEYpydNwgDc&t=1s", guildId, channelId);
+        const song = await playMusicApi("https://www.youtube.com/watch?v=zEYpydNwgDc&t=1s", guildId, channelId, interaction.user);
         await interaction.editReply({
             content: `${song.name} 노래 큐에 등록 완료!`
         })

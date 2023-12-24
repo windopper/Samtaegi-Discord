@@ -13,7 +13,7 @@ import {
   getGuildsData,
   saveGuildsData,
 } from "../../../db";
-import { updateMusicEmbed } from "./messageService";
+import { updateMusicEmbed } from "./updateMusicEmbed";
 import { getOrCreateQueue } from "../../../api/music";
 
 type GuildId = string;
@@ -32,7 +32,12 @@ export function getSamtaegiEmbedMemory(guildId: string) {
 export async function initializeSamtaegiChannels(client: Client) {
   loadSamtaegiEmbedMemory();
   const promises = client.guilds.cache.map(async (g, k) => {
-    await initializeSamtaegiChannel(g);
+    try {
+      await initializeSamtaegiChannel(g);
+    }
+    catch (err) {
+      console.log(err)
+    }
   });
 
   await Promise.all(promises);

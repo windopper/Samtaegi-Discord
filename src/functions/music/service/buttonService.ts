@@ -3,6 +3,8 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
+  InteractionEditReplyOptions,
+  MessagePayload,
   TextChannel,
 } from "discord.js";
 import {
@@ -16,8 +18,9 @@ import {
   toggleQueueLoopApi,
   toggleSongLoopApi,
 } from "../../../api/music";
-import { updateMusicEmbed } from "./messageService";
-import { RepeatMode } from "discord-music-player";
+import { updateMusicEmbed } from "./updateMusicEmbed";
+import { Queue, RepeatMode, Song } from "discord-music-player";
+import { connect } from "pm2";
 
 export enum MusicButtonId {
   RESUME = "music/resume",
@@ -27,7 +30,8 @@ export enum MusicButtonId {
   STOP = "music/stop",
   NO_LOOP = "music/no_loop",
   SONG_LOOP = "music/song_loop",
-  QUEUE_LOOP = "musig/queue_loop",
+  QUEUE_LOOP = "music/queue_loop",
+  QUEUE_LIST = "music/queue_list"
 }
 
 export function createButtonAction(paused: boolean, repeatMode: RepeatMode) {
@@ -56,10 +60,15 @@ export function createButtonAction(paused: boolean, repeatMode: RepeatMode) {
     .setLabel("중지")
     .setStyle(ButtonStyle.Danger);
 
+  const list = new ButtonBuilder()
+    .setCustomId(MusicButtonId.QUEUE_LIST)
+    .setLabel("대기열 보기")
+    .setStyle(ButtonStyle.Secondary)
+
   let row = new ActionRowBuilder<ButtonBuilder>();
   if (paused) row = row.addComponents(play);
   else row = row.addComponents(pause);
-  row = row.addComponents(skip, shuffle, stop);
+  row = row.addComponents(skip, stop, list);
 
   if (repeatMode === RepeatMode.DISABLED) {
     row.addComponents(
@@ -127,6 +136,39 @@ export async function toggleDisableLoopService(interaction: ButtonInteraction) {
   await interactionReply(`재생 반복을 "없음"으로 설정했어요`, interaction);
 }
 
+export async function showQueueList(interaction: ButtonInteraction) {
+  const queue = getOrCreateQueue(interaction.guildId);
+  
+  const newEmbed = {
+    title: "현재 대기열",
+    description: getDescription(queue)
+  }
+
+  await interactionReply({
+    embeds: [newEmbed]
+  }, interaction, -1)
+
+  function getDescription(queue: Queue) {
+    const { songs, nowPlaying, destroyed } = queue;
+    let content = `♬ 현재 재생 중인 노래 ${nowPlaying && !destroyed ? `**${nowPlaying.name}** [${songs[0].duration}]` : "없다 맨이야"} \n`
+    if (songs.length > 0) {
+        content += `\n현재 큐 **${songs.length - 1} 곡** \n`
+        for (let i = 1; i<songs.length; i++) {
+            if ((content + getMusicInfo(songs[i]) + '\n').length <= 4000) content += `${i}.` + getMusicInfo(songs[i]) + '\n'
+            else {
+                content += `...이하 ${songs.length - i}곡`
+                break;
+            }
+        }
+    }
+    return content;
+  }
+
+  function getMusicInfo(song: Song) {
+    return `${song.name} [${song.duration}]`
+  }
+}
+
 export async function propagateEmbed(interaction: ButtonInteraction) {
   const channel = interaction.channel as TextChannel;
   await updateMusicEmbed(channel.messages, {
@@ -134,14 +176,30 @@ export async function propagateEmbed(interaction: ButtonInteraction) {
   });
 }
 
+/**
+ * 
+ * @param content 
+ * @param interaction 
+ * @param timeout -1 설정시 타임아웃 없음
+ */
 async function interactionReply(
-  content: string,
-  interaction: ButtonInteraction
+  content: (string | MessagePayload | InteractionEditReplyOptions),
+  interaction: ButtonInteraction,
+  timeout: number = 3000
 ) {
-  await interaction.editReply({
-    content: content,
-  });
-  setTimeout(async () => {
-    await interaction.deleteReply();
-  }, 3000);
+  if (typeof content == "string") {
+    await interaction.editReply({
+      embeds: [{
+        description: content
+      }]
+    })
+  }
+  else {
+    await interaction.editReply(content);
+  }
+  if (timeout !== -1) {
+    setTimeout(async () => {
+      await interaction.deleteReply();
+    }, timeout);
+  }
 }

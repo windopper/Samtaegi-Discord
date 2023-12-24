@@ -1,5 +1,5 @@
 import { ButtonInteraction } from "discord.js";
-import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
+import { MusicButtonId, pauseMusicService, propagateEmbed, resumeMusicService, showQueueList, shuffleMusicService, skipMusicService, stopMusicService, toggleDisableLoopService, toggleQueueLoopService, toggleSongLoopService } from "../service/buttonService";
 import { getOrCreateQueue } from "../../../api/music";
 import { ChannelError } from "../../../errors/channel";
 import { SamtaegiError } from "../../../errors/samtaegi";
@@ -42,6 +42,10 @@ export async function musicButtonController(interaction: ButtonInteraction) {
             }
             case MusicButtonId.QUEUE_LOOP: {
                 await toggleDisableLoopService(interaction);
+                break;
+            }
+            case MusicButtonId.QUEUE_LIST: {
+                await showQueueList(interaction);
                 break;
             }
         }

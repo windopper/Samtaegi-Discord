@@ -1,5 +1,5 @@
 import { CacheType, ChatInputCommandInteraction, TextChannel } from "discord.js";
-import { updateMusicEmbed } from "./messageService";
+import { updateMusicEmbed } from "./updateMusicEmbed";
 import { getOrCreateQueue } from "../../../api/music";
 import { getSamtaegiEmbedMemory } from "./channelService";
 

@@ -5,13 +5,13 @@ import { ChannelError } from "../errors/channel";
 import { listenMusicPlayerEvent } from "../functions/music/events/musicPlayerEvents";
 import ytdl from 'ytdl-core'
 import { Time } from "../utils/time";
-import { Utils } from "discord.js";
+import { User, Utils } from "discord.js";
 
 export let musicPlayer: Player;
 
 export default function initializeMusicPlayer(client: any) {
     musicPlayer = new Player(client, {
-
+        quality: 'low'
     });
     listenMusicPlayerEvent(client, musicPlayer);
 }
@@ -24,13 +24,15 @@ export default function initializeMusicPlayer(client: any) {
  * @param voiceChannelId 
  * @returns 
  */
-export async function playMusicApi(input: string, guildId: string, voiceChannelId: string) {
+export async function playMusicApi(input: string, guildId: string, voiceChannelId: string, requestedBy?: User) {
     let queue: Queue = getOrCreateQueue(guildId);
     await connectVoiceChannelApi(guildId, voiceChannelId)
 
     let song: Song | Playlist;
     if (testYoutubePlayListLink(input)) {
-        song = await queue.playlist(input);
+        song = await queue.playlist(input, {
+            requestedBy: requestedBy,
+        });
     }
     else if (testYoutubeLink(input)) {
         const info = await ytdl.getInfo(input);
@@ -43,14 +45,18 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
                 thumbnail: info.videoDetails.thumbnails[0].url,
                 duration: Time.msToTime((Number.parseInt(info.videoDetails.lengthSeconds) ?? 0) * 1000)
             },
-            queue
+            queue,
+            requestedBy
         )
 
         await queue.play(song);
     }
     else {
-        song = await queue.play(input);
+        song = await queue.play(input, {
+            requestedBy: requestedBy
+        });
     }
+
     return song
 }
 
