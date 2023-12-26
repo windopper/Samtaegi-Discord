@@ -15,7 +15,7 @@ export default {
         
         const song = await playMusicApi("https://www.youtube.com/watch?v=zEYpydNwgDc&t=1s", guildId, channelId, interaction.user);
         await interaction.editReply({
-            content: `${song.name} 노래 큐에 등록 완료!`
+            content: `${song.song.name} 노래 큐에 등록 완료!`
         })
     }
 }

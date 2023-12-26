@@ -8,8 +8,6 @@ import {
   Partials,
 } from "discord.js";
 import 'dotenv/config'
-import { openAIFunctionCalling } from "./agent/agent";
-import { initializeTools } from "./agent/tools";
 import chalk from "chalk";
 import { initializeCommands } from "./commands";
 import initializeMusicPlayer from "./api/music/music";
@@ -17,6 +15,7 @@ import { initializeMusicFunction } from "./functions/music";
 import { musicMessageController } from "./functions/music/controller/messageController";
 import { musicButtonController } from "./functions/music/controller/buttonController";
 import { musicCommandController } from "./functions/music/controller/commandController";
+import "./config/authorization"
 
 const { token } = process.env;
 
@@ -33,8 +32,7 @@ export const client = new Client({
 
 client.once(Events.ClientReady, (c) => {
   initializeMusicPlayer(client);
-  //initializeTools();
-  initializeCommands();
+  initializeCommands().catch(console.log);
   initializeMusicFunction(client);
   console.log(chalk.green(`Ready! Logged in as ${c.user.tag}`));
   client.user?.setActivity("삼태기 메들리", { type: ActivityType.Competing });

@@ -60,7 +60,9 @@ async function exceptionHandler(interaction: ButtonInteraction, err: Error) {
     if (err instanceof SamtaegiError) logger.warn(getLoggerPrefix(interaction) + ` err: ${err}`)
     else logger.error(getLoggerPrefix(interaction) + ` err: ${err}`)
     await interaction.editReply({
-        content: `:warning: ${err.message}`,
+        embeds: [{
+            description: `:warning: ${err.message}`
+        }]
     })
 }
 

@@ -4,9 +4,10 @@ import { ChannelError } from "../../errors/channel";
 import { listenMusicPlayerEvent } from "../../functions/music/events/musicPlayerEvents";
 import ytdl from 'ytdl-core'
 import { Time } from "../../utils/time";
-import { User, Utils } from "discord.js";
+import { User } from "discord.js";
 import logger from "../../logger";
-import { Player, Playlist, Queue, RepeatMode, Song } from "discord-music-player";
+import { DMPError, DMPErrors, Player, Playlist, Queue, RepeatMode, Song, Utils } from "discord-music-player";
+import playdl from 'play-dl'
 
 export let musicPlayer: Player;
 
@@ -18,6 +19,11 @@ export default function initializeMusicPlayer(client: any) {
     listenMusicPlayerEvent(client, musicPlayer);
 }
 
+type MusicType = "SoundCloudPlaylist" | "YoutubePlayList" | "SpotifyPlayList" | "SpotifyAlbum" | "SoundCloudTrack" | "YoutubeVideo" | "SpotifyTrack" | "Search"
+export type MusicAPI = {
+    song: Song | Playlist,
+    type: MusicType
+}
 /**
  * connect to voice channel and add music to queue
  * 
@@ -26,40 +32,54 @@ export default function initializeMusicPlayer(client: any) {
  * @param voiceChannelId 
  * @returns 
  */
-export async function playMusicApi(input: string, guildId: string, voiceChannelId: string, requestedBy?: User) {
+export async function playMusicApi(input: string, guildId: string, voiceChannelId: string, requestedBy?: User): Promise<MusicAPI> {
     let queue: Queue = getOrCreateQueue(guildId);
     await connectVoiceChannelApi(guildId, voiceChannelId)
 
     let song: Song | Playlist;
-    if (testYoutubePlayListLink(input)) {
-        song = await queue.playlist(input, {
-            requestedBy: requestedBy,
-        });
+    let type: MusicType;
+    const soundcloudType = await playdl.so_validate(input);
+    const youtubeType = playdl.yt_validate(input);
+    const spotifyType = playdl.sp_validate(input);
+    
+    if (soundcloudType === "playlist") {
+        song = await Utils.soundCloudPlayList(input, { requestedBy }, queue);
+        type = "SoundCloudPlaylist"
     }
-    else if (testYoutubeLink(input)) {
-        const info = await ytdl.getInfo(input);
-        song = new Song(
-            {
-                name: info.videoDetails.title,
-                url: info.videoDetails.video_url,
-                author: info.videoDetails.author.name,
-                isLive: info.videoDetails.isLiveContent,
-                thumbnail: info.videoDetails.thumbnails[0].url,
-                duration: Time.msToTime((Number.parseInt(info.videoDetails.lengthSeconds) ?? 0) * 1000)
-            },
-            queue,
-            requestedBy
-        )
-
-        await queue.play(song);
+    else if (youtubeType === "playlist") {
+        song = await Utils.youtubePlayList(input, { requestedBy }, queue);
+        type = "YoutubePlayList"
+    }
+    else if (spotifyType === "album" || spotifyType === "playlist") {
+        song = await Utils.spotifyPlayList(input, { requestedBy }, queue);
+        if (spotifyType === "album") type = "SpotifyAlbum"
+        else type = "SpotifyPlayList"
+    }
+    else if (soundcloudType === "track") {
+        song = await Utils.soundCloudLink(input, { requestedBy }, queue);
+        type = "SoundCloudTrack"
+    }
+    else if (youtubeType === "video") {
+        song = await Utils.youtubeLink(input, { requestedBy }, queue);
+        type = "YoutubeVideo"
+    }
+    else if (spotifyType === "track") {
+        song = await Utils.spotifyLink(input, { requestedBy }, queue);
+        type = "SpotifyTrack"
     }
     else {
-        song = await queue.play(input, {
-            requestedBy: requestedBy
-        });
+        const songs = await Utils.search(input, { requestedBy }, queue);
+        if (songs.length === 0) throw MusicError.getDefault("NO_MUSIC_FOUND_ERROR")
+        song = songs[0];
+        type = "Search"
     }
 
-    return song
+    if (song instanceof Song) await queue.play(song);
+    else if (song instanceof Playlist) await queue.playlist(song);
+    return {
+        song,
+        type
+    }
 }
 
 export function pauseMusicApi(guildId: string | null) {

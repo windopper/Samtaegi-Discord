@@ -108,7 +108,7 @@ export async function playMusicTool(title: string, message: Message<boolean>) {
     if (!message.guildId) return;
     if (!message.member?.voice.channelId) return;
     const youtubeMusic = await playMusicApi(title, message.guildId, message.member.voice.channelId, message.author)
-    const musicTitle = youtubeMusic.name
+    const musicTitle = youtubeMusic.song.name
     return `success add queue title: "${musicTitle}" music`
 }
 
