@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { checkHasSamtaegiChannel, initializeSamtaegiChannel } from "../../functions/music/service/channelService";
-import { ChannelError } from "../../errors/channel";
+import { ChannelError, ChannelErrorType } from "../../errors/channel";
 
 export default {
     data: new SlashCommandBuilder()
@@ -8,7 +8,7 @@ export default {
         .setDescription("initialize samtaegi channel").setDescriptionLocalization("ko", "삼태기 채널을 초기화 합니다"),
     async execute(interaction: ChatInputCommandInteraction) {
         const guild = interaction.guild;
-        if (!guild) throw ChannelError.getDefault("NO_GUILD_ERROR");
+        if (!guild) throw new ChannelError(ChannelErrorType.NO_GUILD_ERROR)
         let channel = await checkHasSamtaegiChannel(guild);
         if (channel) {
             await interaction.editReply({

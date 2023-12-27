@@ -1,6 +1,6 @@
 import { Playlist, Song } from "discord-music-player";
 import { MusicAPI, getOrCreateQueue, playMusicApi } from "../../../api/music/music";
-import { ChannelError } from "../../../errors/channel";
+import { ChannelError, ChannelErrorType } from "../../../errors/channel";
 import { APIEmbed, ButtonBuilder, EmbedBuilder, GuildMessageManager, JSONEncodable, Message } from "discord.js";
 import { updateMusicEmbed } from "./updateMusicEmbed";
 
@@ -8,8 +8,8 @@ export async function playMusicService(message: Message<boolean>) {
     const input = message.content;
     const guildId = message.guildId;
     const voiceChannelId = message.member?.voice.channelId;
-    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR");
-    if (!voiceChannelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
+    if (!guildId) throw new ChannelError(ChannelErrorType.NO_GUILD_ERROR)
+    if (!voiceChannelId) throw new ChannelError(ChannelErrorType.NO_VOICE_CHANNEL_ERROR)
 
     const info = await playMusicApi(input, guildId, voiceChannelId, message.author);
     const guildQueue = getOrCreateQueue(guildId)

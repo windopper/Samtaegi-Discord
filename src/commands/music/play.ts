@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, Interaction, CacheType, ChatInputCommandInteraction, User } from "discord.js";
 import { playMusicApi } from "../../api/music/music";
-import { ChannelError } from "../../errors/channel";
+import { ChannelError, ChannelErrorType } from "../../errors/channel";
 
 export default {
     data: new SlashCommandBuilder()
@@ -17,8 +17,8 @@ export default {
         const member = interaction.guild?.members.cache.get(userId);
         const guildId = interaction.guildId;
         const channelId = member?.voice.channelId;
-        if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
-        if (!channelId) throw ChannelError.getDefault("NO_VOICE_CHANNEL_ERROR")
+        if (!guildId) throw new ChannelError(ChannelErrorType.NO_GUILD_ERROR)
+        if (!channelId) throw new ChannelError(ChannelErrorType.NO_VOICE_CHANNEL_ERROR)
         const song = await playMusicApi(title, guildId, channelId, interaction.user)
     }
 }

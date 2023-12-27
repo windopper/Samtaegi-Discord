@@ -48,7 +48,11 @@ function validateChannelInMusicEmbedMemory(message: Message<boolean>, channelId:
 }
 
 async function musicExceptionHandler(message: Message<boolean>, err: Error) {
-    const replyMessage = await message.reply(`<@${message.author.id}> ` + err.message)
+    const replyMessage = await message.reply({
+        embeds: [{
+            description: `:x: <@${message.author.id}> ` + err.message
+        }]
+    })
     setTimeout(async () => {
         await replyMessage.delete();
     }, 5000);

@@ -1,5 +1,5 @@
-import { MusicError } from "../../errors/music";
-import { ChannelError } from "../../errors/channel";
+import { MusicError, MusicErrorType } from "../../errors/music";
+import { ChannelError, ChannelErrorType } from "../../errors/channel";
 import { listenMusicPlayerEvent } from "../../functions/music/events/musicPlayerEvents";
 import { User } from "discord.js";
 import { Player, Playlist, Queue, RepeatMode, Song, Utils } from "discord-music-player";
@@ -65,7 +65,7 @@ export async function playMusicApi(input: string, guildId: string, voiceChannelI
     }
     else {
         const songs = await Utils.search(input, { requestedBy }, queue);
-        if (songs.length === 0) throw MusicError.getDefault("NO_MUSIC_FOUND_ERROR")
+        if (songs.length === 0) throw new MusicError(MusicErrorType.NO_MUSIC_FOUND_ERROR)
         song = songs[0];
         type = "Search"
     }
@@ -140,10 +140,7 @@ export function shuffleApi(guildId?: string | null) {
 }
 
 export async function connectVoiceChannelApi(guildId?: string | null, voiceChannelId?: string | null) {
-    if (!voiceChannelId) throw new ChannelError({
-        name: "NO_VOICE_CHANNEL_ERROR",
-        message: "음성 채널을 찾을 수 없어요"
-    })
+    if (!voiceChannelId) throw new ChannelError(ChannelErrorType.NO_VOICE_CHANNEL_ERROR)
     const guildQueue = getOrCreateQueue(guildId);
     await guildQueue.join(voiceChannelId);
 }
@@ -156,11 +153,11 @@ export function disconnectVoiceChannelApi(guildId?: string | null) {
 }
 
 function validateConnection(guildQueue: Queue) {
-    if (!guildQueue.connection) throw MusicError.getDefault("NO_QUEUE_CONNECTION")
+    if (!guildQueue.connection) throw new MusicError(MusicErrorType.NO_QUEUE_CONNECTION)
 }
 
 export function getOrCreateQueue(guildId?: string | null) {
-    if (!guildId) throw ChannelError.getDefault("NO_GUILD_ERROR")
+    if (!guildId) throw new ChannelError(ChannelErrorType.NO_GUILD_ERROR)
     let queue = musicPlayer.getQueue(guildId);
     if (queue) return queue;
     queue = musicPlayer.createQueue(guildId);
