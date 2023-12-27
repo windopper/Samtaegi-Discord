@@ -1,12 +1,8 @@
-import { testYoutubeLink, testYoutubePlayListLink } from "./youtube"
 import { MusicError } from "../../errors/music";
 import { ChannelError } from "../../errors/channel";
 import { listenMusicPlayerEvent } from "../../functions/music/events/musicPlayerEvents";
-import ytdl from 'ytdl-core'
-import { Time } from "../../utils/time";
 import { User } from "discord.js";
-import logger from "../../logger";
-import { DMPError, DMPErrors, Player, Playlist, Queue, RepeatMode, Song, Utils } from "discord-music-player";
+import { Player, Playlist, Queue, RepeatMode, Song, Utils } from "discord-music-player";
 import playdl from 'play-dl'
 
 export let musicPlayer: Player;
